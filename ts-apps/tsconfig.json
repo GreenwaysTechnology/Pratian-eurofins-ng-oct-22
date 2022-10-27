@@ -1,0 +1,18 @@
+{
+    "compilerOptions": {
+        "outDir": "build",
+        "watch": true,
+        "target": "ES5",
+        "strictNullChecks": true,
+        "strictPropertyInitialization": true,
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true       
+
+    },
+    "exclude": [
+        "node_modules"
+    ],
+    "files": [
+        "src/index.ts"
+    ]
+}
