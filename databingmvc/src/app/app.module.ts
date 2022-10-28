@@ -3,6 +3,8 @@ import { BrowserModule } from '@angular/platform-browser';
 
 import { AppComponent } from './app.component';
 import { InterpolationModule } from './interpolation/interpolation.module';
+import { PostsModule } from './posts/posts.module';
+import { AttributebindingModule } from './attributebinding/attributebinding.module';
 
 @NgModule({
   declarations: [
@@ -11,6 +13,8 @@ import { InterpolationModule } from './interpolation/interpolation.module';
   imports: [
     BrowserModule,
     InterpolationModule,
+    PostsModule,
+    AttributebindingModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

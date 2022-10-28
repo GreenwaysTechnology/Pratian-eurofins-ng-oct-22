@@ -276,7 +276,161 @@ export class UserlistComponent implements OnInit {
   <app-userlist></app-userlist>
 </div>
 .....................................................................................
-		How to isloate the data from the component/controller
+		                 Property Binding
 .....................................................................................
+Component Responsibility:
+........................
+
+Component contains
+ -Model(state/data)
+ -Methods
+ -User Interface
+
+According to component driven design, Component should not have data and methods,
+
+Component data and state must be kept inside a separte layer is called service layer
+
+Component should be broken into two things
+
+ 1.Component should display only data - UI
+ 2.Component should talk to the service layer in order to get data.
+
+[] - notation is used to send data from the parent component to child component.
+
+
+Steps:
+.....
+import { Injectable } from "@angular/core";
+import { POSTS } from "./post-mock";
+
+//post service class
+
+@Injectable()
+export class PostService {
+    constructor() { }
+    //methods
+    public getPosts(): Array<any> {
+        return POSTS
+    }
+}
+Parent-1- PostList
+<div>
+  <app-postsdetails [posts]="posts" ></app-postsdetails>
+</div>
+import { Component, OnInit } from '@angular/core';
+import { PostService } from './post.service';
+
+@Component({
+  selector: 'app-postslist',
+  templateUrl: './postslist.component.html',
+  styleUrls: ['./postslist.component.css']
+})
+export class PostslistComponent implements OnInit {
+
+  posts!: Array<any>
+
+  constructor(private postService: PostService) { }
+
+  ngOnInit(): void {
+    this.posts = this.postService.getPosts();
+  }
+
+}
+
+Child-1
+<div *ngFor="let post of posts">
+    <app-post [post]="post"></app-post>
+</div>
+import { Component, Input, OnInit } from '@angular/core';
+
+@Component({
+  selector: 'app-postsdetails',
+  templateUrl: './postsdetails.component.html',
+  styleUrls: ['./postsdetails.component.css']
+})
+export class PostsdetailsComponent implements OnInit {
+
+  @Input()
+  posts!:Array<any>
+
+  constructor() { }
+
+  ngOnInit(): void {
+  }
+
+}
+..
+Post:
+<p>{{post.id}}</p>
+<h2>{{post.title}}</h2>
+<p>{{post.body}}</p>import { Component, Input, OnInit } from '@angular/core';
+
+@Component({
+  selector: 'app-post',
+  templateUrl: './post.component.html',
+  styleUrls: ['./post.component.css']
+})
+export class PostComponent implements OnInit {
+  
+  @Input()
+  post!: any
+  constructor() { }
+
+  ngOnInit(): void {
+  }
+
+}
+....................................................................................
+				 Attribute Binding
+....................................................................................
+1.property binding - sending data from parent to child as prop- []
+2.attribute binding - dynamically assign html attributes - []
+3.class binding - dynamic css class binding - []
+4.style binding - dynamic css style binding - []
+
+
+Attributes:
+ Html attributes are bound with html elements statically or dynamically.
+
+static binding:
+ <img src="logo.png"/>
+       |      |
+   attribute  attributeValue
+
+<h1>Attribute Binding</h1>
+<div>
+    <h2>Static Binding</h2>
+    <img src="favicon.ico" />
+</div>
+<div>
+    <img [src]="imageUrl" />
+
+</div>
+<div>
+   <button [disabled]="isEnabled">Click</button>
+
+</div>
+
+import { Component, OnInit } from '@angular/core';
+
+@Component({
+  selector: 'app-attributebinding',
+  templateUrl: './attributebinding.component.html',
+  styleUrls: ['./attributebinding.component.css']
+})
+export class AttributebindingComponent implements OnInit {
+  imageUrl:string = ".//app/favicon.ico"
+  isEnabled:boolean = false
+  constructor() { }
+
+  ngOnInit(): void {
+  }
+
+}
+
+
+
+
+
 
 
