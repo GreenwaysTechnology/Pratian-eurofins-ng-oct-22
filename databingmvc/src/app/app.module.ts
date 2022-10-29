@@ -5,6 +5,8 @@ import { AppComponent } from './app.component';
 import { InterpolationModule } from './interpolation/interpolation.module';
 import { PostsModule } from './posts/posts.module';
 import { AttributebindingModule } from './attributebinding/attributebinding.module';
+import { EventhandlingModule } from './eventhandling/eventhandling.module';
+import { PipesModule } from './pipes/pipes.module';
 
 @NgModule({
   declarations: [
@@ -15,6 +17,8 @@ import { AttributebindingModule } from './attributebinding/attributebinding.modu
     InterpolationModule,
     PostsModule,
     AttributebindingModule,
+    EventhandlingModule,
+    PipesModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

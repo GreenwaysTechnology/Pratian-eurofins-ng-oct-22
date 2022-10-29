@@ -1,0 +1,52 @@
+<div>
+    <h2>SimpleListener</h2>
+    <button (click)="onClick()">Click</button>
+</div>
+<div>
+    <h2>SendData </h2>
+    <button (click)="onData('Hello')">Send Data</button>
+</div>
+<div>
+    <h2>Show Selected Data </h2>
+    <ul>
+        <li style="cursor:pointer" *ngFor="let post of posts" (click)="onSelectedPost(post)" [class.selected]="post === selectedpost">
+            <span>{{post.title}}</span>
+        </li>
+    </ul>
+</div>
+<hr>
+
+<!-- Add conditional block to verify the variable is undefined or null -->
+<!-- <div *ngIf="post; else defaultMsg">
+    <h2>Post Details</h2>
+    <p>{{selectedpost.id}}</p>
+    <p>{{selectedpost.body}}</p>
+</div>
+<!-- Built in component -ng-template : used for else block -->
+<!-- <ng-template #defaultMsg>
+  <p>Select Post</p>
+</ng-template> -->
+<!-- Using safe navigation operator -->
+<div>
+    <h2>Post Details</h2>
+    <p>{{selectedpost?.id ? selectedpost.id : 0 }}</p>
+    <p>{{selectedpost?.body ?selectedpost.body : 'default' }}</p>
+</div>
+<hr>
+<div>
+    <h2>User Input -Two way data binding with listener</h2>
+    <h3>{{text1}}</h3>
+    <!-- $event is global variable which points Event Object -->
+    <input (input)="getInput($event)">
+</div>
+<div>
+    <h2>User Input -Two way data binding without listener Using Banana in a box notation</h2>
+    <h3>{{text2}}</h3>
+    <!-- $event is global variable which points Event Object -->
+    <input [(ngModel)]="text2">
+</div>
+<hr>
+<div>
+    <h1>Event Emitter Pattern : Data sharing between Child and Parent</h1>
+    <app-parent></app-parent>
+</div>

@@ -427,6 +427,724 @@ export class AttributebindingComponent implements OnInit {
   }
 
 }
+.....................................................................................
+		Event Binding and Two way data binding	
+			Event Handling
+.....................................................................................
+How to implement event  handling?
+
+Plain js:
+
+<button onclick="listener()">Click</button>
+
+In Angular , event handling is done using a symbol called ()
+
+<button (NameoftheEvent)="listener()">Click</button>
+<button (click)="listener()">Click</button>
+.............................................	
+
+Eg:
+ Simple listener
+<div>
+    <button (click)="onClick()" >Click</button>
+</div>
+import { Component, OnInit } from '@angular/core';
+
+@Component({
+  selector: 'app-eventhandling',
+  templateUrl: './eventhandling.component.html',
+  styles: [
+  ]
+})
+export class EventhandlingComponent implements OnInit {
+
+  constructor() { }
+
+  ngOnInit(): void {
+  }
+
+  //methods
+  public onClick(){
+     console.log('button is clicked')
+  }
+
+}
+
+..............
+How to send data to the listener?
+<div>
+    <h2>SendData </h2>
+    <button (click)="onData('Hello')" >Send Data</button>
+</div>
+import { Component, OnInit } from '@angular/core';
+
+@Component({
+  selector: 'app-eventhandling',
+  templateUrl: './eventhandling.component.html',
+  styles: [
+  ]
+})
+export class EventhandlingComponent implements OnInit {
+
+  constructor() { }
+
+  ngOnInit(): void {
+  }
+  public onData(data:string){
+    console.log(data)
+ }
+}
+.....................................................................................
+How to select data from list?
+
+import { Component, OnInit } from '@angular/core';
+import { PostService } from '../posts/post.service';
+
+@Component({
+  selector: 'app-eventhandling',
+  templateUrl: './eventhandling.component.html',
+  styles: [
+  ]
+})
+export class EventhandlingComponent implements OnInit {
+
+  posts!: Array<any>
+  post!:any
+
+  constructor(private postService: PostService) { }
+
+  ngOnInit(): void {
+    this.posts = this.postService.getPosts();
+  }
+
+  //methods
+  public onClick() {
+    console.log('button is clicked')
+  }
+  public onData(data: string) {
+    console.log(data)
+  }
+  public onSelectedPost(selectedPost:any){
+     console.log(selectedPost)
+     this.post = selectedPost
+  }
+}
+
+<div>
+    <h2>Show Selected Data </h2>
+     <ul>
+        <li *ngFor="let post of posts" (click)="onSelectedPost(post)">
+            <span>{{post.title}}</span>
+        </li>
+     </ul>
+</div>
+<hr>
+<div>
+    <h2>Post Details</h2>
+    <p>{{post.id}}</p>
+    <p>{{post.body}}</p>
+</div>
+
+after running this code,in the browser console, you will get error like below.
+
+core.mjs:7635 ERROR TypeError: Cannot read properties of undefined (reading 'id')
+    at EventhandlingComponent_Template (eventhandling.component.html:20:8)
+    at executeTemplate (core.mjs:12084:9)
+    at refreshView (core.mjs:11969:13)
+    at refreshComponent (core.mjs:13043:13)
+    at refreshChildComponents (core.mjs:11759:9)
+    at refreshView (core.mjs:12019:13)
+    at refreshComponent (core.mjs:13043:13)
+    at refreshChildComponents (core.mjs:11759:9)
+    at refreshView (core.mjs:12019:13)
+    at detectChangesInternal (core.mjs:13187:9)
+
+
+The code below
+
+The variable inside component is
+
+post!:any
+
+<div>
+    <h2>Post Details</h2>
+    <p>{{post.id}}</p>
+    <p>{{post.body}}</p>
+</div>
+
+is executed during first render,during first render, the post is undefined thats why the error is coming.
+
+How to fix this problem?
+
+ Solution:
+  we need to verify when that variable is having value(object reference) or not.
+
+selectUser:User => undefined
+
+Using if condition.
+
+How to introduce if condition inside template?
+.....................................................................................
+			   Directives
+.....................................................................................
+.........
+What is directive?
+  Directive is custom element / attribute..
+
+<app-root> ,<app-root [title]>
+
+
+Types of Directives:
+1.Template directive
+2.Structural directive
+3.Attribute directive
+
+1.Template directive
+   The directive with Template ; all components create template directive
+  <app-root> ----------------template directive
+  <app-profile>--------------template directive
+
+All component's meta data is inherited from Directive meta.
+Directive is parent , Component is child
+
+Every component is directive.
+
+
+
+2.Structural Directive
+   It is type of directive, used to change HTML Layouts.
+   They shape or reshape the DOM's "Structure" typically by adding,removing and manipulating
+   the host elements to which they attached.
+   
+  -Host element means html elements eg div,span,li,table.
+  -It is one of the "special attribute" directive
+  -All structural directive starts with "*" notation.
+
+*ngFor -  Structural Directive
+
+Built in structural directives
+
+1.*ngFor : for loop
+2.*ngIf  : if condition
+3.*ngSwitch : switch...case
+
+
+List /Array rendering:
+......................
+
+Layouts:
+1.List view Layout
+   -ul li
+2.Card View Layout
+  div
+3.Grid View Layout
+  table tr td
+
+
+1.for Loop: *ngFor
+
+-where ever you want to repeate elements
+
+element could be dom element or custom elements
+
+eg:
+ <anyelement *ngFor="condition">
+
+ <div *ngFor="let variableName of arrayname">
+       {{VariableName.property}}
+ </div>
+ This code will create more div elements
+
+ <app-item-list *ngFor="">
+Static view:
+<ul>
+        <li>1</li>
+        <li>2</li>
+        <li>3</li>
+
+    </ul>
+
+<div>
+    <h1 style="text-align: center;">For loop</h1>
+
+    <!--ul element-->
+    <ul>
+        <li *ngFor="let i of numbers">{{i}}</li>
+    </ul>
+    <!--Ui element for tod-->
+    <ul class="list-group">
+        <li class="list-group-item d-flex justify-content-between align-items-center" *ngFor="let todo of todos">
+            <span class="badge badge-primary badge-pill"> {{todo.id}} </span> {{todo.title}}
+        </li>
+
+    </ul>
+    <div class="card" *ngFor="let todo of todos">
+        <h5 class="card-header">{{todo.id}}</h5>
+        <div class="card-body">
+            <h5 class="card-title">{{todo.userId}}</h5>
+            <p class="card-text">{{todo.title}}</p>
+            <a href="#" class="btn btn-primary">Update</a>
+        </div>
+    </div>
+</div>
+
+////////////////////////////////////////////////////////////////////////////////////////////
+
+eg:
+<div>
+    <ul>
+        <li *ngFor="let course of courses">
+            {{course}}
+        </li>
+    </ul>
+</div>
+<h2>Users data</h2>
+<div>
+    <div *ngFor="let user of users">
+        <h3>{{user.username}}</h3>
+        <p>{{user.email}}</p>
+        <address>
+            <p>{{user.address.street}},{{user.address.city}}</p>
+        </address>
+    </div>
+</div>
+.....................................................................................
+				  *ngIf
+
+To implement if condition
+
+<ul>
+  <h1>{{title}}</h1>
+  <!-- <li *ngFor="let user of users |async">
+        <span>{{user.id}} -
+             {{user.name | titlecase}} -
+            {{user.date | date:'dd/MM/yyyy' }} {{user.points | decimalFraction :3}}</span>
+    </li> -->
+  <li *ngFor="let user of users |async">
+    <span (click)="onSelect(user)">{{user.name | titlecase}}</span>
+  </li>
+</ul>
+<br>
+<div *ngIf="selectedUser">
+  <h3>{{selectedUser.id}} details</h3>
+  <h4>Name : {{selectedUser.name | titlecase}}</h4>
+  <h4>Date : {{selectedUser.date | date}}</h4>
+  <h4>Points :{{selectedUser.points | decimalFraction}}</h4>
+</div>
+....................................................................................
+eg:
+import { Component, OnInit } from '@angular/core';
+import { PostService } from '../posts/post.service';
+
+@Component({
+  selector: 'app-eventhandling',
+  templateUrl: './eventhandling.component.html',
+  styles: [
+  ]
+})
+export class EventhandlingComponent implements OnInit {
+
+  posts!: Array<any>
+  post!:any
+
+  constructor(private postService: PostService) { }
+
+  ngOnInit(): void {
+    this.posts = this.postService.getPosts();
+  }
+
+  //methods
+  public onClick() {
+    console.log('button is clicked')
+  }
+  public onData(data: string) {
+    console.log(data)
+  }
+  public onSelectedPost(selectedPost:any){
+     console.log(selectedPost)
+     this.post = selectedPost
+  }
+}
+
+..
+<div>
+    <h2>Show Selected Data </h2>
+     <ul>
+        <li *ngFor="let post of posts" (click)="onSelectedPost(post)">
+            <span>{{post.title}}</span>
+        </li>
+     </ul>
+</div>
+<hr>
+<!-- Add conditional block to verify the variable is undefined or null -->
+<div *ngIf="post; else defaultMsg">
+    <h2>Post Details</h2>
+    <p>{{post.id}}</p>
+    <p>{{post.body}}</p>
+</div>
+<!-- Built in component -ng-template : used for else block -->
+<ng-template #defaultMsg>
+  <p>Select Post</p>
+</ng-template>
+
+....................................................................................
+		Short Cut to display details if object is undefined/null
+
+<div>
+    <h2>Post Details</h2>
+    <p>{{post.id}}</p>
+    <p>{{post.body}}</p>
+</div>
+
+is executed during first render,during first render, the post is undefined thats why the error is coming.
+
+How to fix this problem?
+
+ Solution:
+    Using "safeNavigation Opeartor" - ?.
+
+<!-- Using safe navigation operator -->
+<div>
+    <h2>Post Details</h2>
+    <p>{{post?.id ? post.id : 0 }}</p>
+    <p>{{post?.body ?post.body : 'default' }}</p>
+</div>
+...................................................................................
+			 Getting User Input and Two data Binding
+.................................................................................
+
+Two way data binding is nothing but sending data from the component to view and view to component - both directions.
+<div>
+    <h2>User Input</h2>
+    <h3>{{text1}}</h3>
+    <!-- $event is global variable which points Event Object -->
+    <input (input)="getInput($event)">
+</div>
+
+import { Component, OnInit } from '@angular/core';
+@Component({
+  selector: 'app-eventhandling',
+  templateUrl: './eventhandling.component.html',
+  styles: [
+  ]
+})
+export class EventhandlingComponent implements OnInit {
+
+  text1:string=''
+  //get user Input
+  public getInput(evt:any){
+      console.log('input listener')
+      //how to access the texbox inside listener
+      this.text1 = evt.target.value
+  }
+}
+
+Different ways of writing two way data binding?
+
+1.with listener
+2.without listener -short cuts
+
+without listener:
+ 
+ [(ngModel)] -Banana in a box notation
+   =>Coimbining event() + attribute/prop[]
+
+ngModel is built in Object to transfer data.
+
+<input [(ngModel)]="text2"
+
+Steps:
+1.inject FormsModule into where ever we use ngModel.
+import { NgModule } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { EventhandlingComponent } from '../eventhanlding/eventhandling.component';
+import { FormsModule } from '@angular/forms';
+
+@NgModule({
+  declarations: [
+    EventhandlingComponent
+  ],
+  imports: [
+    CommonModule,FormsModule
+  ],
+  exports: [
+    EventhandlingComponent
+  ]
+})
+export class EventhandlingModule { }
+
+
+2.event handling code
+<div>
+    <h2>User Input -Two way data binding without listener Using Banana in a box notation</h2>
+    <h3>{{text2}}</h3>
+    <!-- $event is global variable which points Event Object -->
+    <input [(ngModel)]="text2">
+</div>
+import { Component, OnInit } from '@angular/core';
+@Component({
+  selector: 'app-eventhandling',
+  templateUrl: './eventhandling.component.html',
+  styles: [
+  ]
+})
+export class EventhandlingComponent implements OnInit {
+   text2:any =''
+
+}
+.....................................................................................
+			 How to send data from the child to parent
+.....................................................................................
+
+Component communication patterns:
+1.Parent to child - props 
+2.Child to Parent - EventEmitter
+3.Across the Components -  rxjs
+
+
+Event Emitter Pattern:
+
+1.Child Compoent
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+
+@Component({
+  selector: 'app-child',
+  templateUrl: './child.component.html',
+  styles: [
+  ]
+})
+export class ChildComponent implements OnInit {
+
+  name: any = 'Subramanain'
+
+  //onSend is name of the event where parent listens
+  @Output()
+  onSend = new EventEmitter<string>()
+  constructor() { }
+
+  ngOnInit(): void {
+  }
+  public sendToParent() {
+    //emit data
+     this.onSend.emit(this.name)
+     this.name = ''
+  }
+
+}
+<div>
+    <input [(ngModel)]="name"/>
+    <button (click)="sendToParent()">SendToParent</button>
+</div>
+
+Parent Component:
+<p>{{name}}</p>
+<hr>
+<app-child (onSend)="onReceive($event)"></app-child>
+import { Component, OnInit } from '@angular/core';
+
+@Component({
+  selector: 'app-parent',
+  templateUrl: './parent.component.html',
+  styles: [
+  ]
+})
+export class ParentComponent implements OnInit {
+
+  name:string =''
+  constructor() { }
+
+  ngOnInit(): void {
+  }
+
+  public onReceive(data:any){
+    console.log(data)
+    this.name = data
+  }
+
+}
+...
+Incase props pattern, parent and child with service layer, child component always send to service via "eventEmitter" Pattern only
+
+.....................................................................................
+				CSS Integration
+.....................................................................................
+
+Angular offers many ways to add css
+
+src/styles.css -  global style for application.
+
+/* You can add global styles to this file, and also import other style files */
+* {
+    font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif
+}
+h1 {
+    color: #264D73;
+}
+h2,h3 {
+    color:#444;
+    font-weight: lighter;
+   
+}
+h3 {
+    font-size: 1.3rem;
+}
+body {
+   max-width: 1000px; 
+   background-color: beige;
+   margin: auto;
+   padding: .5rem;
+}
+a {
+    cursor: pointer;
+}
+button {
+    background-color: #eee;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    color: black;
+    font-size: 1.2rem;
+    padding: 1rem;
+    margin-right: 1rem;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
+
+component specific styles:
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+//  styleUrls: ['./app.component.css']
+   styles: ['h1 {color:red;}']
+})
+export class AppComponent {
+  title = 'databindingmvc';
+}
+...................................................................................
+				Inline styles
+
+using style attribute
+<h1 style="text-align: center;">Event Handling</h1>
+.....................................................................................
+			 Can we integrate thrid party css frameworks
+
+1.bootstrap
+
+npm install bootstrap
+
+            "styles": [
+              "node_modules/bootstrap/dist/css/bootstrap.min.css"
+            ],
+
+
+Dynmic css / class binding and style binding:
+............................................
+
+<div>
+    <h2>Show Selected Data </h2>
+    <ul>
+        <li style="cursor:pointer" *ngFor="let post of posts" (click)="onSelectedPost(post)" [class.selected]="post === selectedpost">
+            <span>{{post.title}}</span>
+        </li>
+    </ul>
+</div>
+<hr>
+
+<!-- Add conditional block to verify the variable is undefined or null -->
+<!-- <div *ngIf="post; else defaultMsg">
+    <h2>Post Details</h2>
+    <p>{{selectedpost.id}}</p>
+    <p>{{selectedpost.body}}</p>
+</div>
+<!-- Built in component -ng-template : used for else block -->
+<!-- <ng-template #defaultMsg>
+  <p>Select Post</p>
+</ng-template> -->
+<!-- Using safe navigation operator -->
+<div>
+    <h2>Post Details</h2>
+    <p>{{selectedpost?.id ? selectedpost.id : 0 }}</p>
+    <p>{{selectedpost?.body ?selectedpost.body : 'default' }}</p>
+</div>
+@Component({
+  selector: 'app-eventhandling',
+  templateUrl: './eventhandling.component.html',
+  styles: ['.selected {background-color:yellow; font-size:30px; }']
+})
+....................................................................................
+			 Data Formating -Pipes
+....................................................................................
+.....................................................................................
+				Data Formating -Pipes
+....................................................................................
+
+What is pipe?
+ pipe object used for data formating.
+
+eg:
+ show uppercase
+ show money values - $,#,
+ show date format  - 1/10/2021 , feb 10 2021...
+ custom formates
+
+Angular provides lot of built in pipes, you can write your own pipes as well.
+....
+Syntax:
+  some data | nameof the pipe.
+
+Pipe with Input :
+  some data | nameof the pipe:input
+
+Builtin pipes:
+
+DatePipe: Formats a date value according to locale rules.
+
+UpperCasePipe: Transforms text to all upper case.
+
+LowerCasePipe: Transforms text to all lower case.
+
+CurrencyPipe: Transforms a number to a currency string, formatted according to locale rules.
+
+DecimalPipe: Transforms a number into a string with a decimal point, formatted according to locale rules.
+
+PercentPipe: Transforms a number to a percentage string, formatted according to locale rules.
+
+asyncPipe : to bind list of values async
+   - used to bind observables directly.
+
+JsonPipe: to show object in json format
+.....................................................................................
+<div>
+    <h1>Date Formating</h1>
+    <p>Today {{today | date }}</p>
+    <p>Today {{today | date:'longDate' }}</p>
+    <p>Today {{today | date:'dd/MM/yyy' }}</p>
+
+</div>
+import { Component, OnInit } from '@angular/core';
+
+@Component({
+  selector: 'app-pipedemo',
+  templateUrl: './pipedemo.component.html',
+  styles: [
+  ]
+})
+export class PipedemoComponent implements OnInit {
+ 
+  today:any = new Date()
+  constructor() { }
+
+  ngOnInit(): void {
+  }
+
+}
+
+
+
+
+
 
 
 
