@@ -1,0 +1,25 @@
+<div class="container">
+    <h1>Post Form</h1>
+    <!-- todo:remove this pipe once form development is over -->
+    {{post | json}}
+    <form #postForm="ngForm" (ngSubmit)="onSubmit()">
+        <div class="form-group">
+            <label for="title">Title</label>
+            <input type="text" #errorMsg1="ngModel" [(ngModel)]="post.title" name="title" class="form-control"
+                id="title" required>
+        </div>
+        <div [hidden]="errorMsg1.valid || errorMsg1.pristine" class="alert alert-danger">
+            title is required
+        </div>
+
+        <div class="form-group">
+            <label for="body">Body</label>
+            <textarea #errorMsg2="ngModel" class="form-control" name="body" [(ngModel)]="post.body" id="body" rows="10"
+                required></textarea>
+        </div>
+        <div [hidden]="errorMsg2.valid || errorMsg2.pristine" class="alert alert-danger">
+            Body  is required
+        </div>
+        <button type="submit" class="btn btn-success" [disabled]="!postForm.form.valid">Submit</button>
+    </form>
+</div>

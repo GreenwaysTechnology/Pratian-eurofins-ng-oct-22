@@ -1123,6 +1123,28 @@ JsonPipe: to show object in json format
     <p>Today {{today | date:'dd/MM/yyy' }}</p>
 
 </div>
+<div>
+    <h1>String  Formating</h1>
+    <p>Name {{"subramanian" | uppercase }}</p>
+    <p>Name {{"SUBRAMANIAN" | lowercase }}</p>
+    <p>Name {{"subramanian" | titlecase }}</p>
+</div>
+<div>
+    <h1>Currency  Formating</h1>
+    <p>Currency {{100.78 | currency }}</p>
+    <p>Currency {{100.78 | currency:'INR' }}</p>
+</div>
+<div>
+    <h1>JSON  Formating</h1>
+    <p>User {{user | json}}</p>
+</div>
+
+<div>
+    <h1>Custom  Formating - round of </h1>
+    <p>value {{10.56833 | decimalFraction}}</p>
+    <p>value {{10.56833 | decimalFraction:3}}</p>
+
+</div>
 import { Component, OnInit } from '@angular/core';
 
 @Component({
@@ -1132,23 +1154,365 @@ import { Component, OnInit } from '@angular/core';
   ]
 })
 export class PipedemoComponent implements OnInit {
- 
-  today:any = new Date()
+
+  today: any = new Date()
+
+  user = { id: 1, name: 'subramanian' }
   constructor() { }
 
   ngOnInit(): void {
   }
 
 }
+....
+
+
+import { Pipe, PipeTransform } from '@angular/core';
+
+@Pipe({
+  name: 'decimalFraction'
+})
+export class DecimalFractionPipe implements PipeTransform {
+
+  transform(value: number, numberofDigits: number = 1): string {
+    //pipe logic
+    return value.toFixed(numberofDigits)
+  }
+
+}
+....................................................................................
+				  Forms
+..............................................................................................
+
+Forms are used to get input from the User.
+
+Types of Forms
+
+1.Template driven Forms -  Using HTML
+2.Reactive forms -  Via coding
+
+Template Driven forms:
+.......................
+
+
+Steps:
+
+1.bootstrap must have been installed -The Forms internally uses bootstrap template
+
+>npm install bootstrap --save
+
+1.FormsModule
+
+import { NgModule } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { BrowserModule } from '@angular/platform-browser';
+import { AppComponent } from './app.component';
+
+@NgModule({
+  declarations: [
+    AppComponent
+  ],
+  imports: [
+    BrowserModule,
+    FormsModule
+  ],
+  providers: [],
+  bootstrap: [AppComponent]
+})
+export class AppModule { }
+
+2.declare FormModel Object going to hold form field data
+
+export class PostFormModel{
+    constructor(public id: number, public title: string, public author: string){
+    }
+}
+
+3.Create Model Object inside component.
+
+export class AppComponent {
+  post: any;
+  constructor() {
+    this.post = new PostFormModel(Math.random(), 'Learn Angular', 'Misko')
+  }
+}
+
+Step 4 : 
+Create inital form Template
+ -Forms should have bootstrap style
+
+<div class="container">
+  <h1>Post Form</h1>
+  <form>
+    <div class="form-group">
+      <label for="title">Title</label>
+      <input type="text" class="form-control" id="title" required>
+    </div>
+
+    <div class="form-group">
+      <label for="name">Name</label>
+      <input type="text" class="form-control" id="name" required>
+    </div>
+
+    <button type="submit" class="btn btn-success">Submit</button>
+
+  </form>
+</div>
+
+
+Step 5:
+
+Data binding
+   Binding textbox(form controls) with Model Object
+   We have many ways
+  1.through instance variable,$event
+  2.through [(ngModel)]="post.title"
+   ngModel = > it is an object from "FormsModule"
+   ngModel it is dto object=>data transfering between view and component.
+
+//
+Form Control value property is bound with name property of input control.
+
+<input [(ngModel)]="post.title" name="title" type="text" class="form-control" id="title" required>
+
+    <form>
+       <!--TODO: Remove this once testing over-->
+       <pre>{{post | json}}</pre>
+      <div class="form-group">
+         <label for="title">Title</label>
+         <input [(ngModel)]="post.title" name="title" type="text" class="form-control" id="title" required>
+       </div>
+       <div class="form-group">
+         <label for="name">Name</label>
+         <input [(ngModel)]="post.author" name="author" type="text" class="form-control" id="name" required>
+       </div>
+   
+       <button type="submit" class="btn btn-success">Submit</button>
+    </form>
+
+.....................................................................................
+
+*****************************************************************************************
+					Vaildation
+///////////////////////////////////////////////////////////////////////////////////////////
+
+Objects In the FormsModule:
+
+NgForm : 
+
+ It is object representation of "form" element.
+ Can be used to control form validations.
+ in order to access the NgForm object inside template. You have to use template reference
+
+<form #postForm> =>postForm points HTMLForm Object
+
+ngForm is Object which inherits HTMLForm
+
+class ngForm extends HTMLForm{
+  +extra behaviour=>Ready made validation code
+  +form submission behaviours
+}
+
+What is meaning of this code <form #postForm>?
+
+ HTMLFORMMobject ----postForm
+
+dummy code for the above template
+ let postForm =  new HTMLForm();
+
+what we need
+ let postForm = new NgForm()
+
+<form #postForm="ngForm"> 
+
+
+The variable postForm is now a reference to the NgForm 
+directive that governs the form as a whole.
+
+The NgForm directive:
+....................
+
+What NgForm directive? You didn't add an NgForm directive before.
+
+Angular did. Angular automatically creates and attaches
+ an NgForm directive to the <form> tag.
+
+"The NgForm directive supplements the form element with additional features. 
+
+It holds the controls you created for the elements  with an "ngModel directive" and name attribute, and monitors their properties, including their validity.
+ 
+It also has its own valid property which is true only if every contained control is valid."
+
+Note: NgForm is built Object ,has more logic for simlifying our form handling process.
+
+********************************************************************************************
+********************************************************************************************
+NgModel :
+
+ 1.Transfering data between UI and Controller .
+
+NgModel not only for data transfer, which does so many other things beyond twoway data binding.
+
+Track control(form element) state and validity with ngModel:
+............................................................
+
+Form element states:
+
+Angular provides built-in css classes to track form control state"
+
+State 	                        css Class if true   Class if false
+
+The control has been visited.  	  ng-touched 	    ng-untouched
+The control's value has changed.  ng-dirty 	    ng-pristine
+The control's value is valid. 	  ng-valid 	    ng-invalid
+
+State Tracking Steps:
+
+1.Look but don't touch.
+2.Click inside the name box, then click outside it.
+3.Add slashes to the end of the name.
+4.Erase the name.
+
+ng-untouched - if you dont touch
+ng-touched - if you touch
+ng-dirty - if you changed
+ng-invalid - if you remove all-empty field
+
+Step 6:
+
+Add custom CSS for visual feedback:
+
+Valid + Required - green Color
+Valid + optional - white color
+Invalid (required | optional) - red Color
+
+Angular Css:
+
+.ng-valid[required], .ng-valid.required  {
+  border-left: 5px solid #42A948; /* green */
+}
+
+.ng-invalid:not(form)  {
+  border-left: 5px solid #a94442; /* red */
+}
+
+****************************************************************************************
+
+Adding validation block to our code:
+...................................
+
+NgModel is Child Object of FormControl Object
+
+class  Input{
+ 
+}
+class NgModel extends Input{
+  //extra features : state tracking,enabling validation.
+}
+
+<input #Xx> -Here xxPoints only Input
+
+<input #Xx="ngModel"> -Here xx points ngModel
+
+      <input  [(ngModel)]="post.title" #errorMsg1="ngModel" name="title" type="text" class="form-control" id="title" required>
+
+Step 7: Add Error Block
+<div class="container">
+  <h1>Post Form</h1>
+  <form #postForm="ngForm">
+    <!--TODO: Remove this once testing over-->
+    <pre>{{post | json}}</pre>
+    <div class="form-group">
+      <label for="title">Title</label>
+      <input [(ngModel)]="post.title" #errorMsg1="ngModel" name="title" type="text" class="form-control" id="title"
+        required>
+      <div [hidden]="errorMsg1.valid || errorMsg1.pristine" class="alert alert-danger">
+        title is required
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="name">Name</label>
+      <input [(ngModel)]="post.author" #errorMsg2="ngModel" name="author" type="text" class="form-control" id="name"
+        required>
+      <div [hidden]="errorMsg2.valid || errorMsg2.pristine" class="alert alert-danger">
+        Author is required
+      </div>
+    </div>
+    <button type="submit" class="btn btn-success">Submit</button>
+
+  </form>
+</div>
+
+Step 7: Disabling submit button until the whole form is valid.
+*******************************************************************************************
+
+Disabling submit button in case any validation fails:
+
+  <button type="submit" class="btn btn-success" [disabled]="!postForm.form.valid">Submit</button>
+
+*************************************************************************************
+
+Code:
 
 
 
+export class Post {
+    constructor(public id:number,public userId:number,public title:string,public body:string) { }
+}
 
+import { Component, OnInit } from '@angular/core';
+import { Post } from './Post.form.model';
 
+@Component({
+  selector: 'app-form',
+  templateUrl: './form.component.html',
+  styles: [`
+  .ng-valid[required], .ng-valid.required  {
+  border-left: 5px solid #42A948; /* green */
+  }
+ .ng-invalid:not(form)  {
+   border-left: 5px solid #a94442; /* red */
+ }
 
+  `
+  ]
+})
+export class FormComponent implements OnInit {
+  //create model object
+  post = new Post(Math.random(), Math.random(), "Angular Forms", "Angular is good for forms")
+  constructor() { }
 
+  ngOnInit(): void {
+  }
+  onSubmit(){
+    console.log(this.post)
+  }
 
+}
+..
+<div class="container">
+    <h1>Post Form</h1>
+    <!-- todo:remove this pipe once form development is over -->
+    {{post | json}}
+    <form #postForm="ngForm" (ngSubmit)="onSubmit()">
+        <div class="form-group">
+            <label for="title">Title</label>
+            <input type="text" #errorMsg1="ngModel" [(ngModel)]="post.title" name="title" class="form-control"
+                id="title" required>
+        </div>
+        <div [hidden]="errorMsg1.valid || errorMsg1.pristine" class="alert alert-danger">
+            title is required
+        </div>
 
-
-
-
+        <div class="form-group">
+            <label for="body">Body</label>
+            <textarea #errorMsg2="ngModel" class="form-control" name="body" [(ngModel)]="post.body" id="body" rows="10"
+                required></textarea>
+        </div>
+        <div [hidden]="errorMsg2.valid || errorMsg2.pristine" class="alert alert-danger">
+            Body  is required
+        </div>
+        <button type="submit" class="btn btn-success" [disabled]="!postForm.form.valid">Submit</button>
+    </form>
+</div>

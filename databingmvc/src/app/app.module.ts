@@ -7,6 +7,7 @@ import { PostsModule } from './posts/posts.module';
 import { AttributebindingModule } from './attributebinding/attributebinding.module';
 import { EventhandlingModule } from './eventhandling/eventhandling.module';
 import { PipesModule } from './pipes/pipes.module';
+import { FormsdemoModule } from './formsdemo/formsdemo.module';
 
 @NgModule({
   declarations: [
@@ -19,6 +20,7 @@ import { PipesModule } from './pipes/pipes.module';
     AttributebindingModule,
     EventhandlingModule,
     PipesModule,
+    FormsdemoModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

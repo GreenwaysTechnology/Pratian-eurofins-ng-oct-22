@@ -5,3 +5,25 @@
     <p>Today {{today | date:'dd/MM/yyy' }}</p>
 
 </div>
+<div>
+    <h1>String  Formating</h1>
+    <p>Name {{"subramanian" | uppercase }}</p>
+    <p>Name {{"SUBRAMANIAN" | lowercase }}</p>
+    <p>Name {{"subramanian" | titlecase }}</p>
+</div>
+<div>
+    <h1>Currency  Formating</h1>
+    <p>Currency {{100.78 | currency }}</p>
+    <p>Currency {{100.78 | currency:'INR' }}</p>
+</div>
+<div>
+    <h1>JSON  Formating</h1>
+    <p>User {{user | json}}</p>
+</div>
+
+<div>
+    <h1>Custom  Formating - round of </h1>
+    <p>value {{10.56833 | decimalFraction}}</p>
+    <p>value {{10.56833 | decimalFraction:3}}</p>
+
+</div>

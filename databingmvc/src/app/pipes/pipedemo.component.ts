@@ -7,8 +7,10 @@ import { Component, OnInit } from '@angular/core';
   ]
 })
 export class PipedemoComponent implements OnInit {
- 
-  today:any = new Date()
+
+  today: any = new Date()
+
+  user = { id: 1, name: 'subramanian' }
   constructor() { }
 
   ngOnInit(): void {
