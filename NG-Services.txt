@@ -1,0 +1,171 @@
+                                  Services
+			     (HTTP Programming)
+.....................................................................................
+What is Async/Non blocking Programming?
+ The main thread/user interface is not blocked because of network calls.
+
+How to start writing async programming?
+There are different implementations.
+1.callback pattern
+2.promise pattern
+3.promise with async and await pattern
+Advanced async pattern
+1.reactive programming- it is thrid party lib
+   rxjs.
+                           Services - Reactive Programming
+				 Using rxjs
+.....................................................................................	
+
+What is Reactive Programming?
+ An API for asynchronous programming with observable streams
+
+Reactive Programming is not new approach to write modern apps, but it is old, collective ideas in one place.
+
+Reactive Programming concepts
+
+1.Async programming
+2.Data Streaming
+3.Event driven Programming  
+
+ Rx = {async,data streaming,event driven Programming}
+
+Reactive programming is similar design patterns , we need implmentation.
+
+Every programming language has "extension" with Reactive - ReactiveX
+
+Java:
+   -Rxjava
+   -Project Reactor
+   -Mutiny
+Js:
+   -RXJS
+
+Angular uses rxjs internally for building advanced stream based async, event driven programming model
+
+Reactive Programming has been implemented with three major principles
+
+1.Observable Design Pattern -  Event Driven programming
+2.functional programming principles - enables declarative programming.
+3.iterator design pattern - push based iterator.
+.....................................................................................
+....................................................................................
+				Angular and rx js
+1.Service is Publisher
+2.Component is Subscriber or Listener
+
+Objects:
+
+Observable: represents the idea of an invokable collection of future values or events.
+Observer: is a collection of callbacks that knows how to listen to values delivered by the Observable.
+Subscription: represents the execution of an Observable, is primarily useful for cancelling the execution.
+Operators: are pure functions that enable a functional programming style of dealing with collections with operations like map, filter, concat, reduce, etc.
+Subject: is equivalent to an EventEmitter, and the only way of multicasting a value or event to multiple Observers.
+Schedulers: are centralized dispatchers to control concurrency, allowing us to coordinate when computation happens on e.g. setTimeout or requestAnimationFrame or others.
+.....................................................................................
+
+What value we can stream?
+  Stream any value including primitives,arrays,collections,promises.....
+
+Steps:
+1.create Stream
+   -From scratch
+	
+   -Using operators
+
+Any stream can emit three types of event
+
+1.data event - emits data
+2.error event - emits error
+3.complete event - emits complete
+.....................................................................................
+
+
+import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class GreeterService {
+
+  constructor() { }
+
+  sayHello(): Observable<string> {
+    return new Observable(observer => {
+      //push data
+      observer.next('Hello')
+      observer.complete() //stream will be closed if there is no more data
+    })
+  }
+
+}
+
+
+import { Component, OnInit } from '@angular/core';
+import { GreeterService } from './greeter.service';
+
+@Component({
+  selector: 'app-greeter',
+  templateUrl: './greeter.component.html',
+  styles: [
+  ]
+})
+export class GreeterComponent implements OnInit {
+
+  message!: string;
+  constructor(private greeterService: GreeterService) { }
+
+  ngOnInit(): void {
+    this.greeterService.sayHello().subscribe({
+      next: message => {
+        console.log(message)
+        this.message = message
+      },
+      complete: function () {
+        console.log('stream is completed')
+      }
+    })
+  }
+
+}
+....................................................................................
+Stream Operators:
+1.creation operator
+2.Stream processing operators
+
+import { Injectable } from '@angular/core';
+import { Observable, of, map, take, distinct, filter } from 'rxjs';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class NumbersService {
+
+  constructor() { }
+
+  public doubleIt(): Observable<number> {
+    return of(1, 2, 2, 4, 3, 3, 4, 5, 6, 7, 8, 9, 10).pipe(
+      //use data processing operators
+      map(i => i * 2),
+      take(5),
+      distinct(),
+      filter(i => i > 5)
+    )
+  }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
